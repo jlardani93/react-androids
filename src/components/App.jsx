@@ -4,8 +4,7 @@ import { connect } from 'react-redux'
 import Header from './Header'
 import Footer from './Footer'
 import Navbar from './Navbar'
-import LandingPage from './LandingPage'
-
+import Home from './Home'
 class App extends React.Component {
 
   constructor(props){
@@ -19,7 +18,7 @@ class App extends React.Component {
         <Header/>
         <Navbar/>
         <Switch>
-          <Route exact path='/' component={LandingPage} />
+          <Route exact path='/' component={Home} />
         </Switch>
         <Footer/>
       </div>
