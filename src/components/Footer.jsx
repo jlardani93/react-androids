@@ -9,17 +9,17 @@ export default function Footer(){
           text-align: center;
         }
 
-        footer {
+        .footer {
           position: absolute;
-          bottom: 0;
-          left: 0;
+          bottom: 0px;
+          left: 0px;
           width: 100%;
-          background-color: gray; 
+          background-color: gray;
         }
       `}
       </style>
       <div className="footer">
-        <h3>Epicodus (c)    Dillon | Eric | Justin   {Date.now()}</h3>
+        <h3>Epicodus (c)    Dillon | Eric | Justin   {new Date().toLocaleDateString()}</h3>
       </div>
     </div>
   )

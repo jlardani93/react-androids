@@ -7,12 +7,12 @@ export default function Navbar(){
         .navbar {
           display: grid;
           grid-template-columns: repeat(4, 1fr);
-          justify-content: center;
+          justify-items: center;
           background-color: black;
         }
 
         .navbar h3 {
-          color: white; 
+          color: white;
         }
       `}
       </style>

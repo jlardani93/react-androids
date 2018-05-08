@@ -13,6 +13,7 @@
   "license": "ISC",
   "dependencies": {
     "file-loader": "^1.1.6",
+    "firebase": "^3.0.0",
     "isomorphic-fetch": "^2.2.1",
     "moment": "^2.18.1",
     "prop-types": "^15.5.10",
