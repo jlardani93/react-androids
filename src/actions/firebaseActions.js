@@ -6,19 +6,19 @@ const { firebaseConfig } = constants;
 firebase.initializeApp(firebaseConfig);
 const users = firebase.database().ref('users');
 
-
 //CREATES A NEW USER IN THE FIREBASE DATABASE
-export function addUser(_email, _password){
+export function addUser(_email, _password, _name){
   console.log('trying to add user');
   return (dispatch) => users.push({
     email: _email,
-    password: _password
+    password: _password,
+    name: _name
   })
   .then(userId => getUser(userId))
   .then(snapshot => {
     console.log('trying to read snapshot');
     console.log(snapshot.key)
-    dispatch(actions.loginUser(snapshot.key, snapshot.val().email))
+    dispatch(actions.loginUser(snapshot.key, snapshot.val().email, snapshot.val().name))
   })
 }
 
@@ -46,7 +46,7 @@ export function login(_email, _password){
       }
     }
     if (loggedInUser){
-      dispatch(actions.loginUser(userKey, loggedInUser.email))
+      dispatch(actions.loginUser(userKey, loggedInUser.email, loggedInUser.name))
     } else {
       alert("The e-mail or password you entered was incorrect. Please try again");
     }

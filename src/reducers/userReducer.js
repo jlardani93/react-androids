@@ -1,7 +1,7 @@
 import constants from './../constants/index.js'
 
 export default (state = {}, action) => {
-  const { userKey, email } = action;
+  const { userKey, email, name } = action;
   const { c } = constants
   let currentUser;
   switch (action.type) {
@@ -12,7 +12,8 @@ export default (state = {}, action) => {
     case c.LOGIN_USER:
       const userData = {
         userKey: userKey,
-        email: email
+        email: email,
+        name: name
       }
       currentUser = Object.assign({}, state, userData);
       localStorage['androidsReduxStore'] = JSON.stringify(userData);

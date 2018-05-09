@@ -14,10 +14,11 @@ export const removeUser = () => {
   }
 }
 
-export const loginUser = (userKey, userEmail) => {
+export const loginUser = (userKey, userEmail, name) => {
   return {
     type: c.LOGIN_USER,
     userKey: userKey,
-    email: userEmail
+    email: userEmail,
+    name: name
   }
 }

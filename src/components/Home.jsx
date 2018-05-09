@@ -17,17 +17,21 @@ class Home extends React.Component {
 
   _email: null;
   _password: null;
+  _name: null;
 
   handleRegistration(){
     const { dispatch } = this.props;
-    dispatch(actions.addUser(this._email.value, this._password.value));
+    console.log(this._name.value);
+    dispatch(actions.addUser(this._email.value, this._password.value, this._name.value));
     this._email.value = '';
     this._password.value = '';
+    this._name.value = '';
   }
 
   handleLogin(){
     const { dispatch } = this.props;
     dispatch(actions.login(this._email.value, this._password.value));
+    if (this.props.currentUserEmail) this.props.history.push('/userinfo');
   }
 
   handleShowRegistration(){
@@ -35,7 +39,7 @@ class Home extends React.Component {
   }
 
   render(){
-
+    console.log("browserHistory", this.props);
     const onSubmitCallback = (this.state.showRegistrationForm) ? this.handleRegistration : this.handleLogin;
 
     console.log(this.state.showRegistrationForm);
@@ -58,7 +62,19 @@ class Home extends React.Component {
             <input type='password'
               id='password'
               placeholder='input password here'
-              ref={(input) => {this._password = input;}}/>
+              ref={(input) => {this._password = input;}}/><br/>
+
+            {(this.state.showRegistrationForm)
+            ?
+            <div>
+              <h4>Name</h4>
+              <input type='text'
+                id='name'
+                placeholder='input name here'
+                ref={(input) => {this._name = input;}}/>
+            </div>
+            : <span></span>}
+
             {(this.state.showRegistrationForm)
              ? <button type="submit">Register</button>
              : <button type="submit">Login</button>}
@@ -94,10 +110,15 @@ class Home extends React.Component {
       </div>
     );
   }
+}
 
+const mapStateToProps = state => {
+  return {
+    currentUserEmail: state.user.email
+  }
 }
 
 Home.propTypes = {
 };
 
-export default connect()(Home);
+export default connect(mapStateToProps)(Home);
