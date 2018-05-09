@@ -1,5 +1,7 @@
 import firebaseConfig from './firebaseConfig'
+import * as actionTypes from './actionTypes'
 
 export default {
-  firebaseConfig: firebaseConfig
+  firebaseConfig: firebaseConfig,
+  c: actionTypes
 }

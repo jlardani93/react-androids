@@ -8,21 +8,22 @@ import rootReducer from './reducers/index.js'
 import { Provider } from 'react-redux'
 import middlewareLogger from './middleware/middleware-logger'
 import thunkMiddleware from 'redux-thunk'
-import persistDataLocally from './middleware/persist-data-locally'
 
+console.log(localStorage['androidsReduxStore']);
 let retrievedState;
 try {
-  retrievedState = localStorage.getItem('reduxStore');
-  if (retrievedState === null){
+  retrievedState = {
+    user: JSON.parse(localStorage['androidsReduxStore'])
+  }
+  if (!retrievedState.user){
     retrievedState = {}
   }
-  retrievedState = JSON.parse(retrievedState);
-  retrievedState.songs.currentSong = null;
-} catch (err){
+} catch (err) {
   retrievedState = {};
 }
 
-const store = createStore(rootReducer, retrievedState, applyMiddleware(middlewareLogger, thunkMiddleware, persistDataLocally))
+
+const store = createStore(rootReducer, retrievedState, applyMiddleware(middlewareLogger, thunkMiddleware))
 
 console.log(store.getState())
 
