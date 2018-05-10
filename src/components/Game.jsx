@@ -3,10 +3,17 @@ import { connect } from 'react-redux'
 
 class Game extends React.Component{
 
-
+  constructor(props){
+    super(props)
+    this.state = {
+      kills: 0
+    }
+    this.componentDidMount = this.componentDidMount.bind(this);
+  }
 
   componentDidMount(){
     let animationCounter = 0;
+    let spawnSpeed = 120;
     const c_width = window.innerWidth - 300;
     const canvas = document.getElementById('gameCanvas');
     const ctx = canvas.getContext('2d');
@@ -42,6 +49,18 @@ class Game extends React.Component{
     const movePlayer = function(){
       player.x += player.velocity[0];
       player.y += player.velocity[1];
+    }
+    const checkPlayerCollision = function(){
+      for (let i = 0; i < circles.length; i++) {
+        let circle = circles[i];
+        const changeInX = player.x - circle.x;
+        const changeInY = player.y - circle.y;
+        const distance = Math.sqrt((changeInX * changeInX) + (changeInY * changeInY));
+        if (distance <= (player.radius + circle.radius)){
+          circles.splice(i, 1);
+          player.radius -= 10;
+        }
+      }
     }
 
     //CIRCLE METHODS
@@ -85,7 +104,6 @@ class Game extends React.Component{
           cos,
           sin
         }
-        console.log(data);
       }
       if (circle.x - player.x > 0) {
         sin *= -1;
@@ -129,24 +147,45 @@ class Game extends React.Component{
       }
     }
 
-    const checkProjectileCollision = function(projectile){
-      circles.forEach(circle => {
-        
-      })
+    const checkProjectileCollision = (projectile, projectileIndex) => {
+      const circlesToDelete = []
+      for (let i = 0; i < circles.length; i++){
+        let circle = circles[i];
+        if ((projectile.x < circle.x+circle.radius)
+         && (projectile.x > circle.x-circle.radius)
+         && (projectile.y < circle.y+circle.radius)
+         && (projectile.y > circle.y-circle.radius)) {
+           projectiles.splice(projectileIndex, 1);
+           circle.radius -= 25;
+           if (circle.radius <= 0) {
+             circlesToDelete.push(i);
+             this.setState({kills: this.state.kills+1})
+             player.radius += 3;
+           }
+         }
+      }
+      // for (let i = 0; i < projectilesToDelete.length; i++){
+      //   delete projectilesToDelete[i];
+      // }
+      circlesToDelete.forEach(index =>  circles.splice(index, 1));
     }
 
-    const animate = function(){
+    const animate = () => {
       ctx.clearRect(0, 0, c_width, c_width);
       animationCounter += 1;
       circles.forEach(circle => drawCircle(circle));
       circles.forEach(circle => growCircle(circle))
-      if (animationCounter % 300 === 0) {
+      if (animationCounter % spawnSpeed === 0) {
         createCircle();
       }
       if (Date.now() - player.velocity[2] > 500) {
         setPlayerVelocity(0, 0);
       }
       drawPlayer();
+      for (let i = 0; i < projectiles.length; i++) {
+        checkProjectileCollision(projectiles[i], i);
+      }
+      checkPlayerCollision();
       movePlayer();
       circles.forEach(circle => {
         setCircleVelocity(circle);
@@ -154,6 +193,10 @@ class Game extends React.Component{
       })
       projectiles.forEach(projectile => drawProjectile(projectile));
       projectiles.forEach(projectile => moveProjectile(projectile));
+      if (animationCounter % 150 === 0) {
+        spawnSpeed -= 1;
+        console.log("spawnspeed: " + spawnSpeed);
+      }
       requestAnimationFrame(animate);
     }
 
@@ -218,6 +261,7 @@ class Game extends React.Component{
         </style>
         <div>
           <h3>Game Component</h3>
+          <h3>Kills: {this.state.kills}</h3>
           <div>
             <canvas id="gameCanvas"></canvas>
           </div>
