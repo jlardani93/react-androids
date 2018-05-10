@@ -1,6 +1,7 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import { PropTypes } from 'prop-types'
+import { Link } from 'react-router-dom'
 
 function UserInfo(props){
 
@@ -8,6 +9,9 @@ function UserInfo(props){
     <div>
       <div>
         <h1>Welcome to <em>React Androids</em>, {props.currentUserName}!</h1>
+      </div>
+      <div>
+        <Link to="/game"><button type="button">Play Game</button></Link>
       </div>
       <style jsx>{`
       `}

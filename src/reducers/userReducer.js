@@ -6,7 +6,7 @@ export default (state = {}, action) => {
   let currentUser;
   switch (action.type) {
     case c.REMOVE_USER:
-      currentUser = Object.assign({}, state, {email: null});
+      currentUser = Object.assign({}, state, {email: null, name: null, userKey: null});
       localStorage['androidsReduxStore'] = {};
       return currentUser;
     case c.LOGIN_USER:

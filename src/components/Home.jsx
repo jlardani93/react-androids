@@ -21,17 +21,26 @@ class Home extends React.Component {
 
   handleRegistration(){
     const { dispatch } = this.props;
-    console.log(this._name.value);
-    dispatch(actions.addUser(this._email.value, this._password.value, this._name.value));
+    const redirectCallback = (() => {
+      console.log(this.props);
+      this.props.history.push('/userinfo');
+    }).bind(this);
+    dispatch(actions.addUser(this._email.value, this._password.value, this._name.value, redirectCallback));
     this._email.value = '';
     this._password.value = '';
     this._name.value = '';
+    if (this.props.currentUserEmail) this.props.history.push('/userinfo');
   }
 
   handleLogin(){
     const { dispatch } = this.props;
-    dispatch(actions.login(this._email.value, this._password.value));
-    if (this.props.currentUserEmail) this.props.history.push('/userinfo');
+    const redirectCallback = (() => {
+      console.log(this.props);
+      this.props.history.push('/userinfo');
+    }).bind(this);
+    dispatch(actions.login(this._email.value, this._password.value, redirectCallback));
+    // console.log(this.props);
+    // if (this.props.currentUserEmail) this.props.history.push('/userinfo');
   }
 
   handleShowRegistration(){
@@ -39,10 +48,7 @@ class Home extends React.Component {
   }
 
   render(){
-    console.log("browserHistory", this.props);
     const onSubmitCallback = (this.state.showRegistrationForm) ? this.handleRegistration : this.handleLogin;
-
-    console.log(this.state.showRegistrationForm);
 
     return (
       <div>
