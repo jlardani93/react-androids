@@ -18,6 +18,7 @@ class Game extends React.Component{
     const canvas = document.getElementById('gameCanvas');
     const ctx = canvas.getContext('2d');
     const colorArray = ['red', 'blue', 'pink', 'green', 'yellow', 'purple', 'orange']
+    const outlines = []
     const circles = []
     const projectiles = []
     const player = {
@@ -62,13 +63,47 @@ class Game extends React.Component{
         }
       }
     }
-
-    //CIRCLE METHODS
-    const createCircle = function(){
+    //OUTLINE METHODS
+    const createOutline = function(){
       const x = Math.floor(Math.random()*c_width);
       const y = Math.floor(Math.random()*c_width);
       const radius = 25;
       const fillStyle = colorArray[Math.floor(Math.random()*colorArray.length)]
+      outlines.push({
+        x: x,
+        y: y,
+        radius: radius,
+        fillStyle: fillStyle,
+        creationTime: Date.now()
+      })
+      console.log("outlines:", outlines)
+    }
+
+    const drawOutline = function(outline){
+      ctx.beginPath();
+      ctx.arc(outline.x, outline.y, outline.radius, 0, Math.PI * 2, true);
+      ctx.fillStyle = outline.fillStyle;
+      ctx.strokeStyle = outline.fillStyle;
+      ctx.lineWidth = 5;
+      ctx.stroke();
+      ctx.closePath();
+    }
+
+    const updateOutlines = function(){
+      for (let i = 0; i < outlines.length; i++) {
+        if (Date.now() - outlines[i].creationTime > 1000){
+          createCircle(outlines[i].x, outlines[i].y, outlines[i].fillStyle)
+          outlines.splice(i, 1);
+        }
+      }
+    }
+
+    //CIRCLE METHODS
+    const createCircle = function(xInput, yInput, fillStyleInput){
+      const x = xInput
+      const y = yInput
+      const radius = 25
+      const fillStyle = fillStyleInput
       circles.push({
         x: x,
         y: y,
@@ -94,23 +129,10 @@ class Game extends React.Component{
       const angle = Math.atan(slope);
       let cos = Math.cos(angle);
       let sin = Math.sin(angle);
-      if (animationCounter % 120 === 0){
-        const data = {
-          changeInX,
-          changeInY,
-          distance,
-          slope,
-          angle,
-          cos,
-          sin
-        }
-      }
       if (circle.x - player.x > 0) {
         sin *= -1;
         cos *= -1;
       }
-      // if (circle.y - player.y < 0) cos *= -1;
-
       circle['velocity'] = [cos, sin];
     }
 
@@ -173,10 +195,11 @@ class Game extends React.Component{
     const animate = () => {
       ctx.clearRect(0, 0, c_width, c_width);
       animationCounter += 1;
+      outlines.forEach(outline => drawOutline(outline));
       circles.forEach(circle => drawCircle(circle));
       circles.forEach(circle => growCircle(circle))
       if (animationCounter % spawnSpeed === 0) {
-        createCircle();
+        createOutline();
       }
       if (Date.now() - player.velocity[2] > 500) {
         setPlayerVelocity(0, 0);
@@ -193,6 +216,7 @@ class Game extends React.Component{
       })
       projectiles.forEach(projectile => drawProjectile(projectile));
       projectiles.forEach(projectile => moveProjectile(projectile));
+      updateOutlines(); 
       if (animationCounter % 150 === 0) {
         spawnSpeed -= 1;
         console.log("spawnspeed: " + spawnSpeed);
