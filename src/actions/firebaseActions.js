@@ -7,8 +7,7 @@ firebase.initializeApp(firebaseConfig);
 const users = firebase.database().ref('users');
 
 //CREATES A NEW USER IN THE FIREBASE DATABASE
-export function addUser(_email, _password, _name){
-  console.log('trying to add user');
+export function addUser(_email, _password, _name, redirectCallback){
   return (dispatch) => users.push({
     email: _email,
     password: _password,
@@ -16,23 +15,20 @@ export function addUser(_email, _password, _name){
   })
   .then(userId => getUser(userId))
   .then(snapshot => {
-    console.log('trying to read snapshot');
-    console.log(snapshot.key)
     dispatch(actions.loginUser(snapshot.key, snapshot.val().email, snapshot.val().name))
+    redirectCallback();
   })
 }
 
 //GETS A USER BY USERID AFTER A NEW USER HAS BEEN ADDED TO THE FIREBASE
 export function getUser(_userId){
-  console.log(_userId);
   return _userId.once('value');
 }
 
 //CHECKS TO SEE IF A USER WITH THE GIVEN EMAIL AND PASSWORD EXISTS IN THE DATABASE AND THEN RECEIVES THAT INFORMATION
-export function login(_email, _password){
+export function login(_email, _password, redirectCallback){
   let loggedInUser = null;
   let userKey = null;
-  console.log('trying to login');
   return (dispatch) => users.orderByChild('email').equalTo(_email).once('value')
   .then(snapshot => {
     if (snapshot.val()) {
@@ -47,6 +43,7 @@ export function login(_email, _password){
     }
     if (loggedInUser){
       dispatch(actions.loginUser(userKey, loggedInUser.email, loggedInUser.name))
+      redirectCallback();
     } else {
       alert("The e-mail or password you entered was incorrect. Please try again");
     }

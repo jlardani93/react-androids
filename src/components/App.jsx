@@ -6,6 +6,7 @@ import Footer from './Footer'
 import Navbar from './Navbar'
 import Home from './Home'
 import UserInfo from './UserInfo'
+import Game from './Game'
 class App extends React.Component {
 
   constructor(props){
@@ -20,7 +21,8 @@ class App extends React.Component {
         <Navbar/>
         <Switch>
           <Route exact path='/' component={Home} />
-          <Route exact path='/userinfo' component={UserInfo} />
+          <Route path='/userinfo' component={UserInfo} />
+          <Route path='/game' component={Game} />
         </Switch>
         <Footer/>
       </div>
